@@ -9,6 +9,7 @@ const defaults = { logoSize: 256, logoScale: 0.72, finalLogoScale: 1, logoRelief
 const ANIMATION_SECONDS = 1.8;
 type ExportSize = '720p' | '1080p' | '2K' | '4K';
 const EXPORT_DIMENSIONS: Record<ExportSize, { width: number; height: number; scale: number }> = { '720p': { width: 1280, height: 720, scale: 2 / 3 }, '1080p': { width: 1920, height: 1080, scale: 1 }, '2K': { width: 2560, height: 1440, scale: 4 / 3 }, '4K': { width: 3840, height: 2160, scale: 2 } };
+const SQUARE_VIDEO_DIMENSIONS: Record<ExportSize, { width: number; height: number; scale: number }> = { '720p': { width: 720, height: 720, scale: 2 / 3 }, '1080p': { width: 1080, height: 1080, scale: 1 }, '2K': { width: 2048, height: 2048, scale: 4 / 3 }, '4K': { width: 3840, height: 3840, scale: 2 } };
 const waitFrame = () => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
 const canvasBlob = (canvas: HTMLCanvasElement) => new Promise<Blob>((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('O navegador não conseguiu gerar a imagem PNG.')), 'image/png'));
 const cropTransparentCanvas = (source: HTMLCanvasElement) => {
@@ -77,12 +78,12 @@ export default function App() {
     logoEngine.current?.seek(safe);
   };
 
-  const createExportRenderer = async (renderSize: ExportSize = exportSize) => {
-    const dimensions = EXPORT_DIMENSIONS[renderSize];
+  const createExportRenderer = async (renderSize: ExportSize = exportSize, square = false) => {
+    const dimensions = square ? SQUARE_VIDEO_DIMENSIONS[renderSize] : EXPORT_DIMENSIONS[renderSize];
     const renderCanvas = document.createElement('canvas');
     renderCanvas.width = dimensions.width;
     renderCanvas.height = dimensions.height;
-    renderCanvas.style.cssText = 'position:fixed;left:-10000px;top:0;width:1920px;height:1080px;';
+    renderCanvas.style.cssText = `position:fixed;left:-10000px;top:0;width:${dimensions.width / dimensions.scale}px;height:${dimensions.height / dimensions.scale}px;`;
     document.body.appendChild(renderCanvas);
     const themeValues = liquidGlassLogoThemes[theme];
     const tuning = normalizeLiquidGlassLogo({
@@ -177,11 +178,11 @@ export default function App() {
     let stream: MediaStream | null = null;
     try {
       if (!('MediaRecorder' in window) || !HTMLCanvasElement.prototype.captureStream) throw new Error('Este navegador não oferece gravação de vídeo por canvas. Atualize o iOS e abra o app no Safari.');
-      // Keep the expensive WebGL pass at 1080p max on mobile, then upscale the
-      // composited frames to the selected delivery size. This reduces GPU stalls.
+      // Render the square animation at a mobile-friendly size, then upscale to the
+      // selected square delivery size. This keeps the icon framing consistent.
       const renderSize: ExportSize = exportSize === '4K' ? '1080p' : exportSize === '2K' ? '720p' : exportSize;
-      rendered = await createExportRenderer(renderSize);
-      const { width, height } = EXPORT_DIMENSIONS[exportSize];
+      rendered = await createExportRenderer(renderSize, true);
+      const { width, height } = SQUARE_VIDEO_DIMENSIONS[exportSize];
       const output = document.createElement('canvas'); output.width = width; output.height = height;
       const ctx = output.getContext('2d');
       if (!ctx) throw new Error('Não foi possível criar o quadro de vídeo.');
@@ -190,7 +191,7 @@ export default function App() {
       if (!mimeType) throw new Error('Este Safari não oferece gravação MP4 H.264 por MediaRecorder. Atualize o iOS e tente novamente.');
       let backgroundAsset: HTMLImageElement | null = null;
       if (backgroundImage) { backgroundAsset = new Image(); backgroundAsset.src = backgroundImage; await backgroundAsset.decode(); }
-      // Relógio monotônico: quando o render 4K demora, descartamos frames em vez de alongar o vídeo.
+      // Relógio monotônico: preserva a duração real sem acumular atraso entre quadros.
       stream = output.captureStream(fps);
       const track = stream.getVideoTracks()[0] as MediaStreamTrack & { requestFrame?: () => void };
       const chunks: BlobPart[] = [];
