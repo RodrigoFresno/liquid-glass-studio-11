@@ -215,3 +215,28 @@ footer { flex: 0 0 44px; }
   .top-actions .mp4-button,
   .top-actions .save-video-button { font-size: 9px; padding-left: 4px; padding-right: 4px; }
 }
+
+
+/* Barra de exportação no lugar correto: imediatamente acima da prévia. */
+.mobile-export-toolbar { display:none; }
+@media (max-width: 800px) {
+  body { min-width:0 !important; width:100%; overflow-x:hidden; }
+  #root, .app-shell, .workspace, .main-panel { min-width:0; max-width:100%; width:100%; }
+  .main-panel { display:flex; flex-direction:column; align-items:stretch; padding:14px 12px 24px; overflow:hidden; }
+  .mobile-export-toolbar { display:block; width:100%; min-width:0; margin:0 0 18px; }
+  .mobile-export-toolbar .top-actions {
+    display:grid;
+    width:100%;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+  }
+  .mobile-export-toolbar .top-actions .offline { display:none; }
+  .mobile-export-toolbar .top-actions .export-size { width:100%; min-width:0; }
+  .mobile-export-toolbar .top-actions button { width:100%; min-width:0; min-height:42px; justify-content:center; white-space:normal; }
+  .mobile-export-toolbar .top-actions .restore-button { grid-column:1; grid-row:2; }
+  .mobile-export-toolbar .top-actions .mp4-button { grid-column:2; grid-row:2; }
+  .mobile-export-toolbar .top-actions .save-video-button { grid-column:1 / -1; grid-row:3; }
+  .preview-heading { width:100%; min-width:0; margin:0 0 12px; }
+  .preview-stage { width:100%; max-width:100%; }
+  .normal-preview .normal-video-canvas { width:100%; max-width:100%; }
+}
