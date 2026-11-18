@@ -191,41 +191,68 @@ export default function App() {
       if (!mimeType) throw new Error('Este Safari não oferece gravação MP4 H.264 por MediaRecorder. Atualize o iOS e tente novamente.');
       let backgroundAsset: HTMLImageElement | null = null;
       if (backgroundImage) { backgroundAsset = new Image(); backgroundAsset.src = backgroundImage; await backgroundAsset.decode(); }
-      // Relógio monotônico: preserva a duração real sem acumular atraso entre quadros.
-      stream = output.captureStream(fps);
-      const track = stream.getVideoTracks()[0] as MediaStreamTrack & { requestFrame?: () => void };
+      // Desenha antes de iniciar a captura: Safari/iOS pode entregar um arquivo
+      // vazio quando o MediaRecorder começa antes do primeiro quadro do canvas.
+      const drawExportFrame = (seconds: number) => {
+        rendered!.engine.renderAt(seconds * values.speed);
+        ctx.clearRect(0, 0, width, height);
+        if (backgroundAsset) {
+          const scale = Math.max(width / backgroundAsset.naturalWidth, height / backgroundAsset.naturalHeight);
+          const w = backgroundAsset.naturalWidth * scale, h = backgroundAsset.naturalHeight * scale;
+          ctx.drawImage(backgroundAsset, (width - w) / 2, (height - h) / 2, w, h);
+        } else {
+          ctx.fillStyle = theme === 'dark' ? '#090b10' : '#eef1f6';
+          ctx.fillRect(0, 0, width, height);
+        }
+        ctx.drawImage(rendered!.renderCanvas, 0, 0, width, height);
+      };
+
+      const durationMs = Math.max(100, (videoEnd - videoStart) * 1000);
+      const frameCount = Math.max(2, Math.round(durationMs * fps / 1000));
+      drawExportFrame(videoStart);
+
+      // Usa captura manual quando requestFrame existe; caso contrário, deixa o
+      // navegador capturar o canvas na taxa solicitada.
+      stream = output.captureStream(0);
+      let track = stream.getVideoTracks()[0] as (MediaStreamTrack & { requestFrame?: () => void }) | undefined;
+      if (!track?.requestFrame) {
+        stream.getTracks().forEach(item => item.stop());
+        stream = output.captureStream(fps);
+        track = stream.getVideoTracks()[0] as (MediaStreamTrack & { requestFrame?: () => void }) | undefined;
+      }
       const chunks: BlobPart[] = [];
-      const durationMs = Math.max(1, (videoEnd - videoStart) * 1000);
-      const frameCount = Math.max(1, Math.round(durationMs * fps / 1000));
       try { recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: exportSize === '4K' ? 12_000_000 : 8_000_000 }); }
       catch { recorder = new MediaRecorder(stream, { mimeType }); }
-      recorder.ondataavailable = event => { if (event.data.size) chunks.push(event.data); };
-      const stopped = new Promise<void>((resolve, reject) => { recorder!.onstop = () => resolve(); recorder!.onerror = () => reject(new Error('O navegador interrompeu a gravação do MP4.')); });
+      recorder.ondataavailable = event => { if (event.data && event.data.size > 0) chunks.push(event.data); };
+      const stopped = new Promise<void>((resolve, reject) => {
+        recorder!.onstop = () => resolve();
+        recorder!.onerror = () => reject(new Error('O navegador interrompeu a gravação do MP4.'));
+      });
+      recorder.start();
+      track?.requestFrame?.();
       const startedAt = performance.now();
-      recorder.start(100);
-      let lastFrame = -1;
+      let lastFrame = 0;
       while (true) {
         const elapsed = performance.now() - startedAt;
         if (elapsed >= durationMs) break;
         const frame = Math.min(frameCount - 1, Math.floor(elapsed * fps / 1000));
-        if (frame !== lastFrame) {
-          rendered.engine.renderAt((videoStart + frame / fps) * values.speed);
-          ctx.clearRect(0, 0, width, height);
-          if (backgroundAsset) {
-            const scale = Math.max(width / backgroundAsset.naturalWidth, height / backgroundAsset.naturalHeight);
-            const w = backgroundAsset.naturalWidth * scale, h = backgroundAsset.naturalHeight * scale;
-            ctx.drawImage(backgroundAsset, (width - w) / 2, (height - h) / 2, w, h);
-          } else { ctx.fillStyle = theme === 'dark' ? '#090b10' : '#eef1f6'; ctx.fillRect(0, 0, width, height); }
-          ctx.drawImage(rendered.renderCanvas, 0, 0, width, height);
-          track.requestFrame?.();
+        if (frame > lastFrame) {
+          drawExportFrame(videoStart + frame / fps);
+          track?.requestFrame?.();
           lastFrame = frame;
         }
-        const nextFrameAt = startedAt + ((frame + 1) * 1000 / fps);
-        await new Promise<void>(resolve => window.setTimeout(resolve, Math.max(0, Math.min(12, nextFrameAt - performance.now()))));
+        const nextFrameAt = startedAt + ((lastFrame + 1) * 1000 / fps);
+        await new Promise<void>(resolve => window.setTimeout(resolve, Math.max(1, Math.min(12, nextFrameAt - performance.now()))));
       }
-      recorder.stop(); await stopped;
+      drawExportFrame(videoEnd);
+      track?.requestFrame?.();
+      // Dá ao Safari tempo para codificar o último quadro e descarregar o segmento.
+      await new Promise<void>(resolve => window.setTimeout(resolve, 120));
+      try { recorder.requestData(); } catch { /* stop() ainda dispara dataavailable */ }
+      recorder.stop();
+      await stopped;
       const blob = new Blob(chunks, { type: recorder.mimeType || mimeType });
-      if (!blob.size) throw new Error('O arquivo MP4 ficou vazio. Tente novamente.');
+      if (!blob.size) throw new Error('O Safari não entregou os dados do vídeo. Feche outras abas, tente novamente e mantenha o app aberto durante a exportação.');
       const filename = 'liquid-glass-' + exportSize + '-' + fps + 'fps-' + Date.now() + '.mp4';
       setVideoFile(new File([blob], filename, { type: 'video/mp4' }));
       seekFrame(videoEnd);
