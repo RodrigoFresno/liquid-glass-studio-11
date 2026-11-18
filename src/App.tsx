@@ -211,48 +211,49 @@ export default function App() {
       const frameCount = Math.max(2, Math.round(durationMs * fps / 1000));
       drawExportFrame(videoStart);
 
-      // Usa captura manual quando requestFrame existe; caso contrário, deixa o
-      // navegador capturar o canvas na taxa solicitada.
-      stream = output.captureStream(0);
-      let track = stream.getVideoTracks()[0] as (MediaStreamTrack & { requestFrame?: () => void }) | undefined;
-      if (!track?.requestFrame) {
-        stream.getTracks().forEach(item => item.stop());
-        stream = output.captureStream(fps);
-        track = stream.getVideoTracks()[0] as (MediaStreamTrack & { requestFrame?: () => void }) | undefined;
-      }
+      // Captura contínua do canvas: evita o modo manual (captureStream(0) /
+      // requestFrame), que pode gerar zero quadros em alguns navegadores móveis.
+      stream = output.captureStream(fps);
       const chunks: BlobPart[] = [];
-      try { recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: exportSize === '4K' ? 12_000_000 : 8_000_000 }); }
-      catch { recorder = new MediaRecorder(stream, { mimeType }); }
-      recorder.ondataavailable = event => { if (event.data && event.data.size > 0) chunks.push(event.data); };
+      try {
+        recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: exportSize === '4K' ? 12_000_000 : 8_000_000 });
+      } catch {
+        recorder = new MediaRecorder(stream, { mimeType });
+      }
+      let recorderError: Error | null = null;
+      recorder.ondataavailable = event => {
+        if (event.data && event.data.size > 0) chunks.push(event.data);
+      };
       const stopped = new Promise<void>((resolve, reject) => {
-        recorder!.onstop = () => resolve();
-        recorder!.onerror = () => reject(new Error('O navegador interrompeu a gravação do MP4.'));
+        recorder!.onstop = () => recorderError ? reject(recorderError) : resolve();
+        recorder!.onerror = () => {
+          recorderError = new Error('O navegador interrompeu a gravação do vídeo.');
+          reject(recorderError);
+        };
       });
-      recorder.start();
-      track?.requestFrame?.();
+
+      // O primeiro quadro já foi desenhado antes do start; timeslice força
+      // entregas periódicas de dados, inclusive em implementações móveis.
+      recorder.start(250);
       const startedAt = performance.now();
-      let lastFrame = 0;
+      let lastFrame = -1;
       while (true) {
         const elapsed = performance.now() - startedAt;
         if (elapsed >= durationMs) break;
         const frame = Math.min(frameCount - 1, Math.floor(elapsed * fps / 1000));
-        if (frame > lastFrame) {
+        if (frame !== lastFrame) {
           drawExportFrame(videoStart + frame / fps);
-          track?.requestFrame?.();
           lastFrame = frame;
         }
-        const nextFrameAt = startedAt + ((lastFrame + 1) * 1000 / fps);
+        const nextFrameAt = startedAt + ((frame + 1) * 1000 / fps);
         await new Promise<void>(resolve => window.setTimeout(resolve, Math.max(1, Math.min(12, nextFrameAt - performance.now()))));
       }
       drawExportFrame(videoEnd);
-      track?.requestFrame?.();
-      // Dá ao Safari tempo para codificar o último quadro e descarregar o segmento.
-      await new Promise<void>(resolve => window.setTimeout(resolve, 120));
-      try { recorder.requestData(); } catch { /* stop() ainda dispara dataavailable */ }
+      await new Promise<void>(resolve => window.setTimeout(resolve, 300));
       recorder.stop();
       await stopped;
       const blob = new Blob(chunks, { type: recorder.mimeType || mimeType });
-      if (!blob.size) throw new Error('O navegador não entregou os dados da gravação. Isso pode acontecer quando o formato de vídeo não é compatível ou quando a captura é interrompida. Tente novamente em outra aba do navegador.');
+      if (!blob.size) throw new Error('A gravação terminou sem quadros codificados. Isso pode ocorrer quando o navegador não consegue codificar esta resolução. Tente selecionar 1080p e gerar novamente.');
       const filename = 'liquid-glass-' + exportSize + '-' + fps + 'fps-' + Date.now() + '.mp4';
       setVideoFile(new File([blob], filename, { type: 'video/mp4' }));
       seekFrame(videoEnd);
