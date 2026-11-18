@@ -1,0 +1,141 @@
+:root{font-family:Arial, sans-serif;color:#edf0f6;background:#090b10;font-synthesis:none;text-rendering:optimizeLegibility}*{box-sizing:border-box}body{margin:0;min-width:1050px;min-height:100vh;background:#090b10}.app-shell{min-height:100vh;background:radial-gradient(ellipse at 72% -25%,#1a2334 0,transparent 45%),#090b10}.topbar{height:76px;border-bottom:1px solid #ffffff12;display:flex;align-items:center;justify-content:space-between;padding:0 34px;background:#0b0e14e8}.brand,.top-actions,.brand-mark,.top-actions button,.upload-card,.upload-icon,.theme-switch button{display:flex;align-items:center}.brand{gap:12px}.brand-mark{width:36px;height:36px;justify-content:center;border:1px solid #9cc7ff55;border-radius:11px;color:#b9d8ff;background:linear-gradient(145deg,#293d5c,#101725);overflow:hidden}.brand-mark img{width:100%;height:100%;object-fit:contain}.brand strong{display:block;font-size:12px;letter-spacing:2.4px}.brand span{display:block;font:9px Consolas,monospace;color:#738198;letter-spacing:1.8px;margin-top:4px}.top-actions{gap:12px}.offline,.live{font:9px Consolas,monospace;letter-spacing:1.1px;color:#8fa6a0}.offline i,.live i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#69c99b;margin-right:7px;box-shadow:0 0 10px #69c99b}.top-actions button{gap:8px;border:1px solid #ffffff20;border-radius:8px;padding:10px 14px;background:#151a24;color:#cbd3df;font:600 11px Arial,sans-serif;cursor:pointer}.top-actions .export{background:#d9e9ff;color:#101b2b;border-color:#d9e9ff}.export:disabled{opacity:.6}.workspace{display:grid;grid-template-columns:285px 1fr;min-height:calc(100vh - 120px)}.sidebar{padding:27px 22px;border-right:1px solid #ffffff12;background:#0c0f15}.section-head{font:9px Consolas,monospace;color:#718097;letter-spacing:1.7px;margin:0 0 16px}.upload-card{width:100%;gap:11px;text-align:left;padding:13px 12px;border:1px dashed #39475b;border-radius:10px;background:#121824;color:#eaf0fa;cursor:pointer}.upload-card b{display:block;font-size:11px;font-weight:600}.upload-card small{display:block;color:#77859a;font-size:9px;margin-top:4px}.upload-card>svg{margin-left:auto;color:#8192aa}.upload-icon{width:34px;height:34px;border-radius:8px;background:#24334a;color:#a8cbff;justify-content:center}.file-name{font:9px Consolas,monospace;color:#6e7b8e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:8px 3px 14px}.upload-card.secondary{background:#10141d;border-style:solid;border-color:#252d3b}.spaced{margin-top:30px}.theme-switch{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:20px}.theme-switch button{justify-content:center;gap:7px;border:1px solid #293243;border-radius:7px;padding:10px;background:#111722;color:#8b9ab0;font-size:10px;cursor:pointer}.theme-switch button.selected{background:#26354a;color:#e5f0ff;border-color:#55749d}.toggle-row{height:42px;display:flex;align-items:center;justify-content:space-between;color:#aeb8c8;font-size:10px;border-bottom:1px solid #ffffff0d;position:relative}.toggle-row input{position:absolute;right:0;opacity:0}.toggle-row i{width:29px;height:16px;border-radius:20px;background:#303a49;position:relative}.toggle-row i:after{content:'';position:absolute;width:10px;height:10px;border-radius:50%;background:#aeb8c8;top:3px;left:3px;transition:.2s}.toggle-row input:checked+i{background:#5279a8}.toggle-row input:checked+i:after{left:16px;background:#fff}.hint{display:flex;gap:9px;padding:12px;margin-top:24px;border:1px solid #28364a;border-radius:8px;background:#111a28;color:#8db9ed}.hint p{margin:0;color:#8797ad;font-size:9px;line-height:1.55}.main-panel{padding:30px 34px 40px;max-width:1500px;width:100%;margin:auto}.preview-heading{display:flex;align-items:end;justify-content:space-between;margin-bottom:20px}.eyebrow{font:9px Consolas,monospace;color:#7d8da4;letter-spacing:1.7px}.preview-heading h1{font-size:23px;font-weight:500;letter-spacing:-.8px;margin:8px 0 0}.preview-heading h1 em{font-style:normal;color:#9fc8ff}.live{font-size:9px}.preview-stage{height:540px;position:relative;overflow:hidden;border:1px solid #ffffff1b;border-radius:13px;background:#090b10;display:flex;align-items:center;justify-content:center;background-size:cover;background-position:center}.preview-stage.light{background-color:#eef1f6;color:#111}.stage-grid{position:absolute;inset:0;opacity:.16;background-image:linear-gradient(#8796ab18 1px,transparent 1px),linear-gradient(90deg,#8796ab18 1px,transparent 1px);background-size:38px 38px;pointer-events:none}.preview-content{position:relative;z-index:1;width:100%;height:100%;display:flex;align-items:center;justify-content:center}.preview-caption{position:absolute;left:18px;right:18px;bottom:14px;display:flex;justify-content:space-between;color:#738097;font:8px Consolas,monospace;letter-spacing:1.2px;pointer-events:none}.controls-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px}.control-group{border:1px solid #ffffff14;background:#10141c;border-radius:10px;padding:16px}.control-group h3{margin:0 0 16px;color:#dce5f2;font-size:11px;font-weight:600}.range-control{display:block;margin:0 0 14px}.range-control:last-child{margin-bottom:0}.range-control>span{display:flex;justify-content:space-between;color:#9ba8bb;font-size:9px;margin-bottom:8px}.range-control b{font:9px Consolas,monospace;color:#b9d8ff}.range-control input{width:100%;height:3px;accent-color:#8bbcff;cursor:pointer}footer{height:44px;border-top:1px solid #ffffff12;padding:0 34px;display:flex;justify-content:space-between;align-items:center;color:#5e6a7c;font:8px Consolas,monospace;letter-spacing:1px}footer b{color:#9ebde5;font-weight:400}button:hover{filter:brightness(1.12)}
+
+.export-size{border:1px solid #ffffff20;border-radius:8px;padding:9px 10px;background:#151a24;color:#dce8f8;font:600 10px Arial,sans-serif;outline:none}.export-size option{background:#151a24;color:#fff}
+
+
+/* Timeline and export controls */
+.top-actions .video-export{background:#24364f;color:#dceaff;border-color:#52749d}
+.top-actions .video-export:disabled,.top-actions .export:disabled{opacity:.55;cursor:wait}
+.compact-toggle{height:36px;margin:3px 0 0;padding:0 3px;font-size:9px}
+.compact-toggle input:disabled+i{opacity:.35}
+.timeline-panel{margin-top:18px;padding:16px 18px;border:1px solid #ffffff18;border-radius:10px;background:#10141c}
+.timeline-title{display:flex;align-items:end;justify-content:space-between;gap:16px;color:#dce5f2;font-size:11px}
+.timeline-title b{display:block;margin-top:6px;font-size:12px}
+.timeline-title output{font:10px Consolas,monospace;color:#9fb8d9}
+.timeline-range{display:block;width:100%;margin:17px 0 12px;accent-color:#9fc8ff;cursor:pointer}
+.timeline-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.timeline-actions button{display:inline-flex;align-items:center;gap:6px;border:1px solid #ffffff20;border-radius:7px;padding:8px 10px;background:#151c28;color:#cbd8e9;font:600 10px Arial,sans-serif;cursor:pointer}
+.timeline-actions .frame-png{margin-left:auto;background:#d9e9ff;color:#101b2b;border-color:#d9e9ff}
+.timeline-actions span{flex:1 1 180px;color:#77869b;font-size:9px;line-height:1.4}
+.timeline-actions button:disabled{opacity:.55;cursor:wait}
+@media(max-width:1250px){.topbar{padding:0 18px}.top-actions{gap:7px}.top-actions button{padding:9px 10px}.main-panel{padding-left:20px;padding-right:20px}}
+
+.video-range-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;padding-top:12px;border-top:1px solid #ffffff10}
+.video-range-grid label{display:grid;grid-template-columns:1fr auto;gap:7px;color:#9ba8bb;font-size:9px}
+.video-range-grid output{font:9px Consolas,monospace;color:#b9d8ff}
+.video-range-grid input{grid-column:1/-1;width:100%;accent-color:#8bbcff;cursor:pointer}
+@media(max-width:800px){.video-range-grid{grid-template-columns:1fr}}
+
+
+/* Layout de edição: preview permanece visível; somente os controles rolam. */
+html, body, #root { height: 100%; }
+body { min-height: 0; overflow: hidden; }
+.app-shell { height: 100vh; min-height: 720px; display: flex; flex-direction: column; overflow: hidden; }
+.topbar { flex: 0 0 76px; }
+.workspace { height: calc(100vh - 120px); min-height: 0; flex: 1 1 auto; overflow: hidden; }
+.sidebar { min-height: 0; overflow-y: auto; }
+.main-panel { height: 100%; min-height: 0; display: flex; flex-direction: column; overflow: hidden; padding-top: 20px; padding-bottom: 16px; }
+.preview-heading { flex: 0 0 auto; margin-bottom: 12px; }
+.preview-stage { flex: 0 0 430px; height: 430px; min-height: 430px; background-image: none !important; }
+.preview-content { position: absolute; inset: 0; width: 100%; height: 100%; }
+.iphone16-device { position: relative; z-index: 1; height: 398px; aspect-ratio: 402 / 874; padding: 7px; border-radius: 48px; background: linear-gradient(145deg,#555b65 0%,#17191e 18%,#08090c 72%,#454a53 100%); border: 1px solid #858b96; box-shadow: 0 18px 46px #0009, inset 0 0 0 1px #ffffff35; }
+.iphone16-screen { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 40px; background: #090b10; isolation: isolate; }
+.iphone16-island { position: absolute; z-index: 5; top: 9px; left: 50%; transform: translateX(-50%); width: 76px; height: 21px; border-radius: 20px; background: #030406; box-shadow: inset 0 1px 2px #ffffff12; pointer-events: none; }
+.iphone16-homebar { position:absolute; z-index:6; bottom:7px; left:50%; transform:translateX(-50%); width:82px; height:4px; border-radius:4px; background:#ffffffc9; pointer-events:none; }
+.iphone16-screen .preview-content { z-index: 1; }
+.iphone16-screen .preview-content > .liquid-glass-logo { min-height: 0; }
+.preview-caption { z-index: 2; }
+.editor-controls-scroll { flex: 1 1 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 0 5px 14px 0; margin-top: 12px; scrollbar-width: thin; scrollbar-color: #43536a #111722; }
+.editor-controls-scroll::-webkit-scrollbar { width: 8px; }
+.editor-controls-scroll::-webkit-scrollbar-track { background: #111722; border-radius: 8px; }
+.editor-controls-scroll::-webkit-scrollbar-thumb { background: #43536a; border-radius: 8px; }
+.timeline-panel { margin-top: 0; padding: 12px 15px; }
+.timeline-range { margin: 12px 0 9px; }
+.timeline-actions { gap: 6px; }
+.timeline-actions button { padding: 7px 9px; }
+.video-range-grid { margin-top: 10px; padding-top: 9px; }
+.controls-grid { align-content: start; padding: 0 0 14px; margin-top: 12px; }
+.sidebar::-webkit-scrollbar { width: 8px; }
+.sidebar::-webkit-scrollbar-track { background: #111722; border-radius: 8px; }
+.sidebar::-webkit-scrollbar-thumb { background: #43536a; border-radius: 8px; }
+footer { flex: 0 0 44px; }
+@media(max-height: 850px) {
+  .preview-stage { flex-basis: 360px; height: 360px; min-height: 360px; }
+  .iphone16-device { height: 334px; border-radius: 42px; }
+  .iphone16-screen { border-radius: 35px; }
+  .timeline-panel { padding: 9px 12px; }
+  .timeline-actions span { display: none; }
+}
+@media(max-width: 1250px) {
+  .main-panel { padding-left: 18px; padding-right: 18px; }
+  .controls-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+
+
+/* Alternância entre simulação de iPhone 16e e prévia de vídeo sem moldura. */
+.preview-mode-switch{display:flex;gap:6px;align-self:flex-end;margin:-2px 0 10px auto;padding:3px;border:1px solid #ffffff18;border-radius:8px;background:#101722}
+.preview-mode-switch button{border:0;border-radius:6px;padding:7px 12px;background:transparent;color:#8796aa;font:600 10px Arial,sans-serif;cursor:pointer}
+.preview-mode-switch button.selected{background:#2a3c55;color:#e5f0ff;box-shadow:inset 0 0 0 1px #6686ad66}
+.iphone16-notch{position:absolute;z-index:5;top:0;left:50%;transform:translateX(-50%);width:112px;height:27px;border-radius:0 0 17px 17px;background:#030406;box-shadow:inset 0 -1px 1px #ffffff12;pointer-events:none}
+.iphone16-device{height:398px;aspect-ratio:0.488 / 1;padding:7px;border-radius:48px;background:linear-gradient(145deg,#aeb3bb 0%,#626873 5%,#252930 15%,#08090c 70%,#626873 96%,#b7bcc4 100%);border:1px solid #aeb4bd;box-shadow:0 18px 46px #0009,inset 0 0 0 1px #ffffff55;position:relative;z-index:1}
+.iphone16-screen{border-radius:40px}
+/* Botões físicos do iPhone 16e: chave de silencioso, volume e botão lateral. */
+.iphone16-device:before{content:"";position:absolute;left:-3px;top:18%;width:3px;height:8%;border-radius:3px 0 0 3px;background:linear-gradient(90deg,#444a53,#aeb4bd)}
+.iphone16-device:after{content:"";position:absolute;left:-3px;top:31%;width:3px;height:17%;border-radius:3px 0 0 3px;background:linear-gradient(90deg,#444a53,#aeb4bd);box-shadow:0 68px 0 -0.2px #858c96}
+.iphone16-screen:after{content:"";position:absolute;right:-10px;top:27%;width:3px;height:22%;border-radius:0 3px 3px 0;background:linear-gradient(90deg,#555b65,#b4bac3);pointer-events:none}
+.iphone16-screen .preview-content{z-index:1}
+.normal-preview .normal-video-canvas{position:relative;z-index:1;width:min(78%,850px);aspect-ratio:16/9;max-height:82%;overflow:hidden;border:1px solid #ffffff30;border-radius:10px;background:#090b10;box-shadow:0 18px 50px #0008;flex:0 1 auto}
+.normal-preview .normal-video-canvas>.liquid-glass-logo{min-height:0}
+.normal-preview .preview-caption{bottom:14px}
+.iphone-preview .preview-caption{bottom:14px}
+@media(max-height:850px){.iphone16-device{height:334px;border-radius:42px}.iphone16-screen{border-radius:35px}.iphone16-notch{width:94px;height:23px;border-radius:0 0 15px 15px}}
+
+
+/* iPhone / PWA: fluxo vertical, sem largura mínima de desktop ou moldura de aparelho. */
+@media (max-width: 800px) {
+  html, body, #root { width:100%; min-width:0; min-height:100%; height:auto; }
+  body { min-width:0; min-height:100svh; overflow-x:hidden; overflow-y:auto; }
+  .app-shell { width:100%; min-height:100svh; height:auto; overflow:visible; }
+  .topbar { height:auto; min-height:64px; flex-wrap:wrap; gap:10px; padding:12px 14px; }
+  .brand { gap:9px; }
+  .brand-mark { width:32px; height:32px; flex:0 0 32px; }
+  .brand strong { font-size:11px; }
+  .brand span { font-size:8px; }
+  .top-actions { width:100%; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; }
+  .top-actions .offline { display:none; }
+  .top-actions button { justify-content:center; min-height:40px; padding:9px 7px; font-size:10px; }
+  .export-size { width:100%; min-width:0; min-height:38px; }
+  .workspace { display:flex; flex-direction:column; height:auto; min-height:0; overflow:visible; }
+  .sidebar { order:2; width:100%; padding:18px 14px 22px; border-right:0; border-top:1px solid #ffffff12; overflow:visible; }
+  .main-panel { order:1; display:flex; width:100%; height:auto; min-height:0; padding:18px 12px 24px; overflow:visible; }
+  .preview-heading { align-items:center; margin-bottom:12px; }
+  .preview-heading h1 { font-size:19px; }
+  .preview-stage { flex:0 0 auto; width:100%; height:auto; min-height:0; aspect-ratio:16/9; border-radius:10px; }
+  .normal-preview .normal-video-canvas { width:100%; height:100%; max-height:none; aspect-ratio:16/9; border:0; border-radius:0; box-shadow:none; }
+  .preview-content { position:absolute; inset:0; }
+  .preview-caption { left:9px; right:9px; bottom:7px; font-size:7px; letter-spacing:.5px; }
+  .editor-controls-scroll { flex:initial; width:100%; min-height:0; overflow:visible; padding:0; margin-top:12px; }
+  .timeline-panel { padding:12px; }
+  .timeline-title { align-items:flex-start; }
+  .timeline-title output { font-size:9px; text-align:right; }
+  .timeline-actions { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .timeline-actions button { min-height:38px; justify-content:center; padding:7px 5px; font-size:9px; }
+  .timeline-actions span { grid-column:1/-1; grid-row:2; flex:auto; }
+  .timeline-actions .frame-png { grid-column:1/-1; grid-row:3; margin:0; }
+  .video-range-grid { grid-template-columns:1fr; gap:12px; }
+  .controls-grid { grid-template-columns:1fr; gap:10px; margin-top:10px; }
+  .control-group { padding:14px; }
+  .range-control input { min-height:24px; }
+  .sidebar .section-head.spaced { margin-top:22px; }
+  footer { height:auto; min-height:44px; padding:10px 14px; gap:8px; flex-wrap:wrap; font-size:7px; }
+}
+@media (max-width: 380px) {
+  .top-actions { grid-template-columns:1fr 1fr; }
+  .preview-heading h1 { font-size:17px; }
+  .timeline-title { display:block; }
+  .timeline-title output { display:block; margin-top:8px; text-align:left; }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* The animation is an editing feature; it remains active unless paused in-app. */
+  .liquid-glass-logo canvas { transition:none; }
+}
