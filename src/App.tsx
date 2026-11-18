@@ -233,24 +233,35 @@ export default function App() {
     finally { stream?.getTracks().forEach(track => track.stop()); rendered?.engine.dispose(); rendered?.renderCanvas.remove(); setBusy(false); }
   };
   const saveVideo = async () => {
-    if (!videoFile) return;
+    if (!videoFile) {
+      alert('Gere o vídeo primeiro para depois salvar.');
+      return;
+    }
     const nav = navigator as Navigator & { canShare?: (data: ShareData) => boolean; share?: (data: ShareData) => Promise<void> };
-    try {
-      if (nav.share && nav.canShare?.({ files: [videoFile] })) {
-        await nav.share({ files: [videoFile], title: 'Liquid Glass Studio' });
-        return;
+    // Tenta compartilhar no iPhone; se o Safari rejeitar a folha de compartilhamento,
+    // recorre ao download direto em vez de encerrar com erro.
+    if (nav.share && nav.canShare) {
+      try {
+        if (nav.canShare({ files: [videoFile] })) {
+          await nav.share({ files: [videoFile], title: 'Liquid Glass Studio' });
+          return;
+        }
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') return;
       }
+    }
+    try {
       const url = URL.createObjectURL(videoFile);
       const anchor = document.createElement('a');
       anchor.href = url;
-      anchor.download = videoFile.name;
+      anchor.download = videoFile.name.endsWith('.mp4') ? videoFile.name : videoFile.name + '.mp4';
+      anchor.style.display = 'none';
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();
-      window.setTimeout(() => URL.revokeObjectURL(url), 120_000);
-    } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') return;
-      alert('Não foi possível abrir o compartilhamento. Tente novamente pelo Safari.');
+      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    } catch {
+      alert('O vídeo foi gerado, mas o Safari não conseguiu iniciar o download. Toque em Compartilhar e escolha Salvar em Arquivos.');
     }
   };
 
