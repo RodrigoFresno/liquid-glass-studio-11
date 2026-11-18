@@ -9,7 +9,7 @@ const defaults = { logoSize: 256, logoScale: 0.72, finalLogoScale: 1, logoRelief
 const ANIMATION_SECONDS = 1.8;
 type ExportSize = '720p' | '1080p' | '2K' | '4K';
 const EXPORT_DIMENSIONS: Record<ExportSize, { width: number; height: number; scale: number }> = { '720p': { width: 1280, height: 720, scale: 2 / 3 }, '1080p': { width: 1920, height: 1080, scale: 1 }, '2K': { width: 2560, height: 1440, scale: 4 / 3 }, '4K': { width: 3840, height: 2160, scale: 2 } };
-const SQUARE_VIDEO_DIMENSIONS: Record<ExportSize, { width: number; height: number; scale: number }> = { '720p': { width: 720, height: 720, scale: 2 / 3 }, '1080p': { width: 1080, height: 1080, scale: 1 }, '2K': { width: 2048, height: 2048, scale: 4 / 3 }, '4K': { width: 3840, height: 3840, scale: 2 } };
+const SQUARE_VIDEO_DIMENSIONS: Record<ExportSize, { width: number; height: number; scale: number }> = { '720p': { width: 720, height: 720, scale: 2 / 3 }, '1080p': { width: 1080, height: 1080, scale: 1 }, '2K': { width: 2048, height: 2048, scale: 4 / 3 }, '4K': { width: 2160, height: 2160, scale: 2 } };
 const waitFrame = () => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
 const canvasBlob = (canvas: HTMLCanvasElement) => new Promise<Blob>((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('O navegador não conseguiu gerar a imagem PNG.')), 'image/png'));
 const cropTransparentCanvas = (source: HTMLCanvasElement) => {
