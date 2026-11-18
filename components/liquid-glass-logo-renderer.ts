@@ -899,7 +899,6 @@ export function createLiquidGlassLogoRenderer(
       if (frame) cancelAnimationFrame(frame);
       frame = 0;
       draw();
-      gl.finish();
     },
     pause() {
       playing = false;
