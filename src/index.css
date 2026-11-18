@@ -240,3 +240,21 @@ footer { flex: 0 0 44px; }
   .preview-stage { width:100%; max-width:100%; }
   .normal-preview .normal-video-canvas { width:100%; max-width:100%; }
 }
+
+
+/* Prévia fixa durante a edição: somente a área abaixo dela rola. */
+@media (max-width: 800px) {
+  .main-panel { overflow:visible; }
+  .sticky-preview {
+    position:sticky;
+    top:0;
+    z-index:20;
+    width:100%;
+    padding:10px 0 12px;
+    margin:0 0 12px;
+    background:var(--app-bg, #090b10);
+    isolation:isolate;
+  }
+  .sticky-preview .preview-heading { margin:0 0 8px; }
+  .sticky-preview .preview-stage { margin:0; }
+}
