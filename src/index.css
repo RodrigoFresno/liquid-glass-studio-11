@@ -192,3 +192,26 @@ footer { flex: 0 0 44px; }
   .preview-heading .live { position:static; align-self:flex-end; order:2; display:inline-flex; margin:0; line-height:1.2; }
   .preview-stage { position:relative; clear:both; }
 }
+
+
+/* Controles de exportação sempre acima da prévia no mobile, sem rolagem lateral. */
+@media (max-width: 800px) {
+  .topbar { padding-bottom: 18px; }
+  .top-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 8px;
+  }
+  .top-actions .export-size { grid-row: auto; }
+  .top-actions .restore-button { grid-column: 1; grid-row: 2; }
+  .top-actions .mp4-button { grid-column: 2; grid-row: 2; }
+  .top-actions .save-video-button { grid-column: 1 / -1; grid-row: 3; }
+  .main-panel { padding-top: 24px; }
+  .preview-heading { margin-top: 2px; }
+}
+@media (max-width: 380px) {
+  .top-actions .restore-button,
+  .top-actions .mp4-button,
+  .top-actions .save-video-button { font-size: 9px; padding-left: 4px; padding-right: 4px; }
+}
