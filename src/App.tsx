@@ -53,6 +53,7 @@ export default function App() {
   const [loop, setLoop] = useState(false);
   const [paused, setPaused] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
   const [exportSize, setExportSize] = useState<ExportSize>('4K');
   const [fps, setFps] = useState<30 | 60>(30);
   const [frameTime, setFrameTime] = useState(0);
@@ -66,7 +67,7 @@ export default function App() {
   const readFile = (file: File, cb: (url: string) => void) => { const reader = new FileReader(); reader.onload = () => cb(String(reader.result)); reader.readAsDataURL(file); };
   const onLogo = (file?: File) => { if (!file) return; readFile(file, setLogo); setLogoName(file.name); };
   const onBackground = (file?: File) => { if (!file) return; readFile(file, setBackgroundImage); };
-  const reset = () => { setValues(defaults); setTheme('dark'); setTile(true); setLoop(false); setPaused(false); setFrameTime(0); setVideoStart(0); setVideoEnd(ANIMATION_SECONDS); logoEngine.current?.replay(); };
+  const reset = () => { setValues(defaults); setTheme('dark'); setTile(true); setLoop(false); setPaused(false); setFrameTime(0); setVideoStart(0); setVideoEnd(ANIMATION_SECONDS); setVideoFile(null); logoEngine.current?.play(); logoEngine.current?.replay(); };
 
   const seekFrame = (seconds: number) => {
     const safe = Math.max(0, Math.min(ANIMATION_SECONDS, seconds));
@@ -188,7 +189,7 @@ export default function App() {
       const mimeTypes = ['video/mp4;codecs=avc1.42E01E', 'video/mp4'];
       const mimeType = mimeTypes.find(type => MediaRecorder.isTypeSupported(type));
       if (!mimeType) {
-        throw new Error('A gravação MP4 H.264 não está disponível neste navegador. Use a versão mais recente do Safari no iPhone.');
+        throw new Error('Este Safari não oferece gravação MP4 H.264 por MediaRecorder. Atualize o iOS e tente novamente.');
       }
 
       let backgroundAsset: HTMLImageElement | null = null;
@@ -201,7 +202,11 @@ export default function App() {
       stream = output.captureStream(fps);
       const track = stream.getVideoTracks()[0] as MediaStreamTrack & { requestFrame?: () => void };
       const chunks: BlobPart[] = [];
-      recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: exportSize === '4K' ? 45_000_000 : 18_000_000 });
+      try {
+        recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: exportSize === '4K' ? 18_000_000 : 10_000_000 });
+      } catch {
+        recorder = new MediaRecorder(stream, { mimeType });
+      }
       recorder.ondataavailable = event => { if (event.data.size) chunks.push(event.data); };
       const stopped = new Promise<void>((resolve, reject) => {
         recorder!.onstop = () => resolve();
@@ -229,16 +234,10 @@ export default function App() {
       }
       recorder.stop();
       await stopped;
-      const blob = new Blob(chunks, { type: 'video/mp4' });
+      const blob = new Blob(chunks, { type: recorder.mimeType || mimeType });
       if (!blob.size) throw new Error('O arquivo MP4 ficou vazio. Tente novamente.');
-      const url = URL.createObjectURL(blob);
-      const anchor = document.createElement('a');
-      anchor.href = url;
-      anchor.download = `liquid-glass-${exportSize}-${fps}fps.mp4`;
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
-      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      const filename = `liquid-glass-${exportSize}-${fps}fps.mp4`;
+      setVideoFile(new File([blob], filename, { type: 'video/mp4' }));
       seekFrame(videoEnd);
     } catch (error) {
       alert(error instanceof Error ? error.message : 'Não foi possível exportar o vídeo.');
@@ -250,6 +249,28 @@ export default function App() {
     }
   };
 
+  const saveVideo = async () => {
+    if (!videoFile) return;
+    const nav = navigator as Navigator & { canShare?: (data: ShareData) => boolean; share?: (data: ShareData) => Promise<void> };
+    try {
+      if (nav.share && nav.canShare?.({ files: [videoFile] })) {
+        await nav.share({ files: [videoFile], title: 'Liquid Glass Studio' });
+        return;
+      }
+      const url = URL.createObjectURL(videoFile);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = videoFile.name;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 120_000);
+    } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') return;
+      alert('Não foi possível abrir o compartilhamento. Tente novamente pelo Safari.');
+    }
+  };
+
   const controls = useMemo(() => [
     { title: 'Logo', items: [ ['Tamanho do vidro', 'logoSize', 96, 512, 1], ['Escala da logo', 'logoScale', 0.2, 1, 0.01], ['Escala final', 'finalLogoScale', 0.2, 1.5, 0.01], ['Relevo da logo', 'logoRelief', 0, 1, 0.01] ] },
     { title: 'Vidro e luz', items: [ ['Profundidade óptica', 'depth', 0, 3, 0.01], ['Dispersão', 'dispersion', 0, 3, 0.01], ['Relevo do vidro', 'relief', 0, 3, 0.01], ['Caústicas', 'caustics', 0, 3, 0.01], ['Reflexos', 'highlights', 0, 3, 0.01], ['Bloom', 'bloom', 0, 2, 0.01], ['Força da gota', 'dropStrength', 0, 3, 0.01] ] },
@@ -257,7 +278,7 @@ export default function App() {
   ] as const, []);
 
   return <main className="app-shell">
-    <header className="topbar"><div className="brand"><div className="brand-mark"><img src={appIcon} alt="Liquid Glass Studio" /></div><div><strong>LIQUID GLASS</strong><span>STUDIO · MOBILE</span></div></div><div className="top-actions"><span className="offline"><i/> PWA · OFFLINE</span><select aria-label="Resolução de exportação" value={exportSize} onChange={e=>setExportSize(e.target.value as ExportSize)} className="export-size"><option value="720p">720p</option><option value="1080p">1080p</option><option value="2K">2K</option><option value="4K">4K</option></select><select aria-label="Quadros por segundo" value={fps} onChange={e=>{const next=Number(e.target.value) as 30 | 60;setFps(next);const maxStart=ANIMATION_SECONDS-1/next;if(videoStart>maxStart)setVideoStart(maxStart);if(videoEnd<videoStart+1/next)setVideoEnd(ANIMATION_SECONDS);}} className="export-size"><option value={30}>30 FPS</option><option value={60}>60 FPS</option></select><button className="ghost" onClick={reset}><RotateCcw size={15}/> Restaurar</button><button className="export" onClick={exportVideo} disabled={busy}><Film size={16}/>{busy?'Gerando MP4…':'Exportar vídeo MP4'}</button></div></header>
+    <header className="topbar"><div className="brand"><div className="brand-mark"><img src={appIcon} alt="Liquid Glass Studio" /></div><div><strong>LIQUID GLASS</strong><span>STUDIO · MOBILE</span></div></div><div className="top-actions"><span className="offline"><i/> PWA · OFFLINE</span><select aria-label="Resolução de exportação" value={exportSize} onChange={e=>setExportSize(e.target.value as ExportSize)} className="export-size"><option value="720p">720p</option><option value="1080p">1080p</option><option value="2K">2K</option><option value="4K">4K</option></select><select aria-label="Quadros por segundo" value={fps} onChange={e=>{const next=Number(e.target.value) as 30 | 60;setFps(next);const maxStart=ANIMATION_SECONDS-1/next;if(videoStart>maxStart)setVideoStart(maxStart);if(videoEnd<videoStart+1/next)setVideoEnd(ANIMATION_SECONDS);}} className="export-size"><option value={30}>30 FPS</option><option value={60}>60 FPS</option></select><button className="ghost" onClick={reset}><RotateCcw size={15}/> Restaurar</button><button className="export" onClick={videoFile ? saveVideo : exportVideo} disabled={busy}><Film size={16}/>{busy?'Gerando MP4…':videoFile?'Salvar vídeo MP4':'Exportar vídeo MP4'}</button></div></header>
     <div className="workspace"><aside className="sidebar"><div className="section-head"><span>01 / ARQUIVOS</span></div>
       <button className="upload-card" onClick={() => logoInput.current?.click()}><div className="upload-icon"><ImagePlus size={20}/></div><div><b>Carregar logotipo</b><small>SVG, PNG ou WebP</small></div><Upload size={15}/></button><input ref={logoInput} type="file" accept="image/svg+xml,image/png,image/webp,image/jpeg" hidden onChange={e=>onLogo(e.target.files?.[0])}/><div className="file-name">{logoName}</div>
       <button className="upload-card secondary" onClick={() => bgInput.current?.click()}><div className="upload-icon"><ImagePlus size={20}/></div><div><b>Imagem de fundo</b><small>Opcional · imagem ou textura</small></div><Upload size={15}/></button><input ref={bgInput} type="file" accept="image/*" hidden onChange={e=>onBackground(e.target.files?.[0])}/><label className="toggle-row compact-toggle"><span>Incluir fundo no PNG</span><input type="checkbox" checked={includeBackgroundInPng} onChange={e=>setIncludeBackgroundInPng(e.target.checked)} disabled={!backgroundImage}/><i/></label>
