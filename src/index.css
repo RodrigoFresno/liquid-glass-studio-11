@@ -258,3 +258,23 @@ footer { flex: 0 0 44px; }
   .sticky-preview .preview-heading { margin:0 0 8px; }
   .sticky-preview .preview-stage { margin:0; }
 }
+
+
+/* Pré-visualização quadrada para corresponder ao vídeo exportado 1:1. */
+@media (max-width: 800px) {
+  .sticky-preview .preview-stage {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 1 / 1;
+  }
+  .sticky-preview .normal-video-canvas {
+    width: min(92%, 460px);
+    height: auto;
+    max-height: none;
+    aspect-ratio: 1 / 1;
+    border: 1px solid #ffffff30;
+    border-radius: 10px;
+    box-shadow: 0 12px 34px #0008;
+  }
+}
