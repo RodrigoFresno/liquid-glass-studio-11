@@ -139,3 +139,40 @@ footer { flex: 0 0 44px; }
   /* The animation is an editing feature; it remains active unless paused in-app. */
   .liquid-glass-logo canvas { transition:none; }
 }
+
+
+/* Ajuste fino mobile: separar título, status ao vivo e ações do cabeçalho. */
+@media (max-width: 800px) {
+  .topbar { gap: 12px; padding-bottom: 14px; }
+  .top-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .top-actions .video-export { grid-column: 1 / -1; width: 100%; }
+  .preview-heading {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 7px;
+    width: 100%;
+    min-width: 0;
+    margin: 0 0 14px;
+  }
+  .preview-heading > div { width: 100%; min-width: 0; }
+  .preview-heading .eyebrow { display: block; }
+  .preview-heading h1 {
+    max-width: 100%;
+    margin: 7px 0 0;
+    font-size: clamp(17px, 4.8vw, 20px);
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+  .preview-heading .live {
+    order: -1;
+    align-self: flex-end;
+    display: inline-flex;
+    align-items: center;
+    min-height: 16px;
+    margin: 0;
+    line-height: 1;
+  }
+  .preview-stage { margin-top: 0; }
+}
