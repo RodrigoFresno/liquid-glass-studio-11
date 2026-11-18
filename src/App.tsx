@@ -252,7 +252,7 @@ export default function App() {
       recorder.stop();
       await stopped;
       const blob = new Blob(chunks, { type: recorder.mimeType || mimeType });
-      if (!blob.size) throw new Error('O Safari não entregou os dados do vídeo. Feche outras abas, tente novamente e mantenha o app aberto durante a exportação.');
+      if (!blob.size) throw new Error('O navegador não entregou os dados da gravação. Isso pode acontecer quando o formato de vídeo não é compatível ou quando a captura é interrompida. Tente novamente em outra aba do navegador.');
       const filename = 'liquid-glass-' + exportSize + '-' + fps + 'fps-' + Date.now() + '.mp4';
       setVideoFile(new File([blob], filename, { type: 'video/mp4' }));
       seekFrame(videoEnd);
