@@ -18,6 +18,8 @@ export type LiquidGlassLogoTuning = {
   logoScale: number;
   /** Resting logo scale; 1 holds its normal size while the glass disappears. */
   finalLogoScale: number;
+  /** Overall scale of the glass rim and animation relative to the preview frame. */
+  glassScale: number;
   /** Draw the logo on an icon plate. */
   tile: boolean;
   fontSize: number;
@@ -91,6 +93,7 @@ export const liquidGlassLogoDefaults: LiquidGlassLogoTuning = {
   logoSize: 256,
   logoScale: 0.72,
   finalLogoScale: 1,
+  glassScale: 1,
   tile: true,
   fontSize: 64,
   fontFamily: 'system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif',
@@ -257,6 +260,7 @@ export function normalizeLiquidGlassLogo(value: LiquidGlassLogoTuning): LiquidGl
     logoSize: finite(value.logoSize, d.logoSize, 24, 1024),
     logoScale: finite(value.logoScale, d.logoScale, 0.1, 1),
     finalLogoScale: finite(value.finalLogoScale, d.finalLogoScale, 0.1, 1),
+    glassScale: finite(value.glassScale, d.glassScale, 0.5, 2.5),
     fontSize: finite(value.fontSize, d.fontSize, 8, 400),
     fontWeight: finite(value.fontWeight, d.fontWeight, 100, 1000),
     letterSpacing: finite(value.letterSpacing, d.letterSpacing, -0.3, 1),
@@ -654,7 +658,7 @@ export function createLiquidGlassLogoRenderer(
       gl.clear(gl.COLOR_BUFFER_BIT);
       return;
     }
-    const scale = fit();
+    const scale = fit() * tuning.glassScale;
     resizeScene();
     gl.bindFramebuffer(gl.FRAMEBUFFER, sceneFramebuffer);
     gl.viewport(0, 0, canvas.width, canvas.height);
@@ -766,6 +770,7 @@ export function createLiquidGlassLogoRenderer(
       tuning.text,
       tuning.logoSize,
       tuning.logoScale,
+      tuning.glassScale,
       tuning.fontSize,
       tuning.fontFamily,
       tuning.fontWeight,
