@@ -20,6 +20,8 @@ export type LiquidGlassLogoTuning = {
   finalLogoScale: number;
   /** Overall scale of the glass rim and animation relative to the preview frame. */
   glassScale: number;
+  /** Independent multiplier for the artwork/icon inside the liquid glass lens. */
+  iconScale: number;
   /** Draw the logo on an icon plate. */
   tile: boolean;
   fontSize: number;
@@ -94,6 +96,7 @@ export const liquidGlassLogoDefaults: LiquidGlassLogoTuning = {
   logoScale: 0.72,
   finalLogoScale: 1,
   glassScale: 1,
+  iconScale: 1,
   tile: true,
   fontSize: 64,
   fontFamily: 'system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif',
@@ -261,6 +264,7 @@ export function normalizeLiquidGlassLogo(value: LiquidGlassLogoTuning): LiquidGl
     logoScale: finite(value.logoScale, d.logoScale, 0.1, 1),
     finalLogoScale: finite(value.finalLogoScale, d.finalLogoScale, 0.1, 1),
     glassScale: finite(value.glassScale, d.glassScale, 0.5, 2.5),
+    iconScale: finite(value.iconScale, d.iconScale, 0.5, 4),
     fontSize: finite(value.fontSize, d.fontSize, 8, 400),
     fontWeight: finite(value.fontWeight, d.fontWeight, 100, 1000),
     letterSpacing: finite(value.letterSpacing, d.letterSpacing, -0.3, 1),
@@ -722,7 +726,7 @@ export function createLiquidGlassLogoRenderer(
       tuning.ending === 'logo' && sequenceTime > 1.13
         ? track(artworkScale, 1.13) * (1 - artworkSettle) + tuning.finalLogoScale * artworkSettle
         : track(artworkScale, displayTime);
-    gl.uniform1f(uniform('uArtScale'), artScale);
+    gl.uniform1f(uniform('uArtScale'), artScale * tuning.iconScale);
     // The logo reaches its resting size first, then holds while the glass clears.
     gl.uniform1f(uniform('uSettle'), settle);
     gl.uniform3fv(uniform('uTile'), parseColor(tuning.tileColor));
@@ -771,6 +775,7 @@ export function createLiquidGlassLogoRenderer(
       tuning.logoSize,
       tuning.logoScale,
       tuning.glassScale,
+      tuning.iconScale,
       tuning.fontSize,
       tuning.fontFamily,
       tuning.fontWeight,
