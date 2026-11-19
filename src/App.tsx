@@ -298,7 +298,7 @@ export default function App() {
   };
 
   const controls = useMemo(() => [
-    { title: 'Logo', items: [ ['Tamanho do vidro', 'logoSize', 96, 512, 1], ['Escala da logo', 'logoScale', 0.2, 1, 0.01], ['Escala final', 'finalLogoScale', 0.2, 1.5, 0.01], ['Escala da borda', 'glassScale', 0.5, 2.5, 0.01], ['Tamanho do ícone', 'iconScale', 0.5, 4, 0.01], ['Relevo da logo', 'logoRelief', 0, 1, 0.01] ] },
+    { title: 'Logo', items: [ ['Tamanho base da lente', 'logoSize', 96, 512, 1], ['Escala da logo', 'logoScale', 0.2, 1, 0.01], ['Escala final', 'finalLogoScale', 0.2, 1.5, 0.01], ['Tamanho do Liquid Glass', 'glassScale', 0.5, 2.5, 0.01], ['Tamanho do ícone', 'iconScale', 0.5, 4, 0.01], ['Relevo da logo', 'logoRelief', 0, 1, 0.01] ] },
     { title: 'Vidro e luz', items: [ ['Profundidade óptica', 'depth', 0, 3, 0.01], ['Dispersão', 'dispersion', 0, 3, 0.01], ['Relevo do vidro', 'relief', 0, 3, 0.01], ['Caústicas', 'caustics', 0, 3, 0.01], ['Reflexos', 'highlights', 0, 3, 0.01], ['Bloom', 'bloom', 0, 2, 0.01], ['Força da gota', 'dropStrength', 0, 3, 0.01] ] },
     { title: 'Animação', items: [ ['Tempo de reflexo', 'decay', 0, 4, 0.01], ['Velocidade', 'speed', 0.1, 3, 0.01], ['Densidade de pixels', 'maxDpr', 1, 4, 0.1], ['Pausa antes do loop', 'loopDelay', 0, 5, 0.1] ] }
   ] as const, []);
