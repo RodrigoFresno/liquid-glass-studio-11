@@ -278,3 +278,12 @@ footer { flex: 0 0 44px; }
     box-shadow: 0 12px 34px #0008;
   }
 }
+
+
+/* Seletor do modo de imagem do logotipo. */
+.logo-mode-switch { margin: 12px 0 6px; }
+.logo-mode-switch button { display:flex; align-items:center; gap:7px; }
+.mode-swatch { display:inline-block; width:13px; height:13px; flex:0 0 13px; border:1px solid #8995a6; border-radius:3px; }
+.monochrome-swatch { background:linear-gradient(135deg,#fff 0 50%,#05070a 50% 100%); }
+.color-swatch { background:conic-gradient(#f44,#fc4,#4c8,#48f,#a5f,#f44); }
+.mode-description { display:block; color:#78879b; font-size:9px; line-height:1.5; margin:0 2px 12px; }
